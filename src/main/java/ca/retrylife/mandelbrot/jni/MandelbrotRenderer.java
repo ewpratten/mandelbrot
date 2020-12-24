@@ -6,11 +6,23 @@ import org.slf4j.LoggerFactory;
 import com.raylib.Jaylib;
 import com.raylib.Raylib;
 import com.raylib.Jaylib.Vector2;
+import com.raylib.Raylib.Rectangle;
 
 public class MandelbrotRenderer {
     private final static Logger logger = LoggerFactory.getLogger(MandelbrotRenderer.class);
 
     static {
+
+        // Load C++ library
+        logger.info("java.library.path: " + System.getProperty("java.library.path"));
+
+        try {
+            System.loadLibrary("bridge");
+        } catch (Error | Exception e) {
+            logger.error("Failed to load JNI bridge library: ", e);
+        }
+
+        logger.info("Native library initialization sequence complete.");
 
     }
 
@@ -18,8 +30,8 @@ public class MandelbrotRenderer {
 
     }
     
-    public static void renderMandelbrotSet(int widthPX, int heightPX, Vector2 topLeft, Vector2 bottomRight) {
-        renderMandelbrotSet(widthPX, heightPX, topLeft.x(), topLeft.y(), bottomRight.x(), bottomRight.y());
+    public static void renderMandelbrotSet(int widthPX, int heightPX, Rectangle viewport) {
+        renderMandelbrotSet(widthPX, heightPX, viewport.x(), viewport.y(), viewport.x() + viewport.width(), viewport.y() + viewport.height());
     }
     
     private static native void renderMandelbrotSet(int widthPX, int heightPX, double topLeftXCoord, double topLeftYCoord, double bottomRightXCoord, double bottomRightYCoord);

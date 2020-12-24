@@ -45,9 +45,7 @@ public class App {
             Jaylib.ClearBackground(Jaylib.BLACK);
 
             // Render the mandelbrot set
-            // MandelbrotRenderer.renderMandelbrotSet(Jaylib.GetScreenWidth(),
-            // Jaylib.GetScreenHeight(), vpTopLeft,
-            // vpBottomRight);
+            MandelbrotRenderer.renderMandelbrotSet(Jaylib.GetScreenWidth(), Jaylib.GetScreenHeight(), viewport);
 
             // Render zoom box
             if (isUserDrawingZoomBox && zoomBoxStart != null && zoomBoxEnd != null) {

@@ -1,112 +1,33 @@
 apply plugin: "cpp"
-
-def getPropOrDefault(prop, dfault) {
-    return (this.properties[prop] != null) ? this.properties[prop] : dfault
-}
+apply plugin: 'edu.wpi.first.GradleJni'
 
 println "Building on OS: " + System.properties['os.name']
 println "Using JDK: " + System.properties['java.home']
 
-def SYS_INCLUDE_DIR = getPropOrDefault("system.include.dir", "/usr/include") 
-def SYS_LOCAL_INCLUDE_DIR = getPropOrDefault("system.local.include.dir", "/usr/local/include") 
-def JNI_INCLUDE_DIR = getPropOrDefault("jni.include.dir", "/usr/lib/jvm/java-11-oracle/include") 
-def JNI_LIB_DIR = getPropOrDefault("jni.lib.dir", "/usr/lib/jvm/java-11-oracle/lib")
-
-println "Using system include directory: " + SYS_INCLUDE_DIR
-println "Using system local include directory: " + SYS_LOCAL_INCLUDE_DIR
-println "Using JNI include directory: " + JNI_INCLUDE_DIR
-println "Using JNI lib directory: " + JNI_LIB_DIR
-
 model {
-    components {
-        bridge(NativeLibrarySpec) {
-            sources {
-                cpp {
-                    source {
-                        srcDir 'src/main/jni'
-                        include "**/*.cpp"
-                    }
-                }
-            }
-            buildTypes {
-                debug
-                release
-            }
-        }
-    }
-    toolChains {
-        gcc(Gcc) {
-            eachPlatform {
-                if (System.properties['os.name'].equals('Mac OS X')) {
-                    cppCompiler.withArguments { args ->
-                        args << "-O2"
-                        args << "-I" + SYS_INCLUDE_DIR
-                        args << "-I" + SYS_LOCAL_INCLUDE_DIR
-                        args << "-I" + JNI_INCLUDE_DIR
-                        args << "-I" + JNI_INCLUDE_DIR + "/darwin"
-                        args << "-std=c++11"
-                    }
-                    linker.withArguments { args ->
-                        args << "-O2"
-                        args << "-lc++"
-                    }
-                } else {
-                    path "/opt/rh/devtoolset-2/root/usr/bin/gcc"
-                    cppCompiler.withArguments { args ->
-                        args << "-O2"
-                        args << "-I" + SYS_INCLUDE_DIR
-                        args << "-I" + SYS_LOCAL_INCLUDE_DIR
-                        args << "-I" + JNI_INCLUDE_DIR
-                        args << "-I" + JNI_INCLUDE_DIR + "/linux"
-                        args << "-std=c++11"
-                    }
-                    linker.withArguments { args ->
-                        args << "-O2"
-                        args << "-lstdc++"
-                    }
-                }
-            }
-        }
-        clang(Clang) {
-            eachPlatform {
-                if (System.properties['os.name'].equals('Mac OS X')) {
-                    cppCompiler.withArguments { args ->
-                        args << "-O2"
-                        args << "-I" + SYS_INCLUDE_DIR
-                        args << "-I" + SYS_LOCAL_INCLUDE_DIR
-                        args << "-I" + JNI_INCLUDE_DIR
-                        args << "-I" + JNI_INCLUDE_DIR + "/darwin"
-                        args << "-std=c++11"
-                    }
-                    linker.withArguments { args ->
-                        args << "-O2"
-                        args << "-lc++"
-                    }
-                } else {
-                    cppCompiler.withArguments { args ->
-                        args << "-O2"
-                        args << "-I" + SYS_INCLUDE_DIR
-                        args << "-I" + SYS_LOCAL_INCLUDE_DIR
-                        args << "-I" + JNI_INCLUDE_DIR
-                        args << "-I" + JNI_INCLUDE_DIR + "/linux"
-                        args << "-std=c++11"
-                    }
-                    linker.withArguments { args ->
-                        args << "-O2"
-                        args << "-lstdc++"
-                    }
+  components {
+    bridge(JniNativeLibrarySpec) { 
+      enableCheckTask true 
+      javaCompileTasks << compileJava
+        sources {
+            cpp {
+                source {
+                    srcDir 'src/main/jni/cpp'
+                    include "**/*.cpp"
                 }
             }
         }
     }
+    
+  }
 }
 
-task copyLibBridge(type: Copy) {
-    if (System.properties['os.name'].equals('Mac OS X')) {
-        from "$projectDir/build/binaries/bridgeSharedLibrary/libbridge.dylib"
+run{
+    systemProperty "java.library.path", "$buildDir/libs/bridge/shared"
+}
+
+jar{
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
-    else {
-        from "$projectDir/build/binaries/bridgeSharedLibrary/libbridge.so"
-    }
-    into 'libs'
 }

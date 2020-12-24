@@ -26,8 +26,8 @@ public class VectorUtil {
 
         // Create a new coordinate
         Vector2 convertedVector = new Vector2();
-        convertedVector.x((viewport.width() - viewport.x()) * xPercentOfWindowWidth);
-        convertedVector.y((viewport.height() - viewport.y()) * yPercentOfWindowHeight);
+        convertedVector.x((viewport.width() * xPercentOfWindowWidth) + viewport.x());
+        convertedVector.y((viewport.height() * yPercentOfWindowHeight) + viewport.y());
 
         return convertedVector;
     }
