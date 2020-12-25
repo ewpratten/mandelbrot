@@ -13,6 +13,9 @@ import ca.retrylife.mandelbrot.jni.MandelbrotRenderer;
 import ca.retrylife.mandelbrot.util.RectangleUtil;
 import ca.retrylife.mandelbrot.util.VectorUtil;
 
+/**
+ * Application entrypoint
+ */
 public class App {
     private final static Logger logger = LoggerFactory.getLogger(App.class);
 
@@ -42,7 +45,7 @@ public class App {
 
             // Begin 2d context
             Jaylib.BeginDrawing();
-            Jaylib.ClearBackground(Jaylib.BLACK);
+            Jaylib.ClearBackground(Jaylib.RAYWHITE);
 
             // Handle "Rebuilding Render Cache" message
             if (!MandelbrotRenderer.isCacheBuilt()) {
@@ -56,12 +59,6 @@ public class App {
             // Render the mandelbrot set
             MandelbrotRenderer.renderMandelbrotSet(Jaylib.GetScreenWidth(), Jaylib.GetScreenHeight(), viewport);
 
-            // for (int x = 0; x < Jaylib.GetScreenWidth(); x++) {
-            // for (int y = 0; y < Jaylib.GetScreenHeight(); y++) {
-            // Jaylib.DrawPixel(x, y, new Jaylib.Color().r((byte)128));
-            // }
-            // }
-
             // Render zoom box
             if (isUserDrawingZoomBox && zoomBoxStart != null && zoomBoxEnd != null) {
 
@@ -73,8 +70,8 @@ public class App {
             Jaylib.DrawText(String.format("(%.2f, %.2f):(%.2f, %.2f)", viewport.x(), viewport.y(), viewport.width(),
                     viewport.height()), 0, Jaylib.GetScreenHeight() - 10, 5, Jaylib.GRAY);
             Jaylib.DrawFPS(20, 20);
-            Jaylib.DrawText("Select an area to zoom", 20, 40, 20, Jaylib.RAYWHITE);
-            Jaylib.DrawText("Press backspace to reset", 20, 60, 20, Jaylib.RAYWHITE);
+            Jaylib.DrawText("Select an area to zoom", 20, 40, 20, Jaylib.BLACK);
+            Jaylib.DrawText("Press backspace to reset", 20, 60, 20, Jaylib.BLACK);
 
             Jaylib.EndDrawing();
 

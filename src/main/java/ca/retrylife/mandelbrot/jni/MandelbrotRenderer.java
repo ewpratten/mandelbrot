@@ -8,9 +8,13 @@ import com.raylib.Jaylib.Vector2;
 import com.raylib.Raylib.Rectangle;
 import com.raylib.Raylib.RenderTexture2D;
 
+/**
+ * Utilities for rendering a Mandelbrot Set
+ */
 public class MandelbrotRenderer {
     private final static Logger logger = LoggerFactory.getLogger(MandelbrotRenderer.class);
 
+    // JNI loading
     static {
 
         // Load C++ library
@@ -30,8 +34,16 @@ public class MandelbrotRenderer {
 
     }
 
+    // Texture cache
     private static RenderTexture2D renderCache = null;
 
+    /**
+     * Build the image cache
+     * 
+     * @param widthPX  Image texture width in pixels
+     * @param heightPX Image texture height in pixels
+     * @param viewport The active viewport
+     */
     private static void buildImageCache(int widthPX, int heightPX, Rectangle viewport) {
 
         // Set up a texture
@@ -41,6 +53,8 @@ public class MandelbrotRenderer {
         Jaylib.EndTextureMode();
 
         // Alloc resources
+        // Suppressing a false-positive "resource leak" warning on this pointer
+        @SuppressWarnings("resource")
         Jaylib.Color color = new Jaylib.Color();
         int pixel = 0;
 
@@ -69,10 +83,18 @@ public class MandelbrotRenderer {
         Jaylib.EndTextureMode();
     }
 
+    /**
+     * Check if the image cache is built
+     * 
+     * @return Is built?
+     */
     public static boolean isCacheBuilt() {
         return renderCache != null;
     }
 
+    /**
+     * Reset and clear the image cache
+     */
     public static void resetRenderCache() {
 
         // Unload and free
@@ -83,6 +105,13 @@ public class MandelbrotRenderer {
         renderCache = null;
     }
 
+    /**
+     * Render the Mandelbrot Set from cache, or build the cache if it does not exist
+     * 
+     * @param widthPX  Image texture width in pixels
+     * @param heightPX Image texture height in pixels
+     * @param viewport The active viewport
+     */
     public static void renderMandelbrotSet(int widthPX, int heightPX, Rectangle viewport) {
 
         // Check if the cache needs to be rebuilt
@@ -100,11 +129,38 @@ public class MandelbrotRenderer {
 
     }
 
+    /**
+     * Compute the Mandelbrot Set
+     * 
+     * @param x        Screenspace pixel X coord
+     * @param y        Screenspace pixel Y coord
+     * @param widthPX  Screen width
+     * @param heightPX Screen height
+     * @param viewport The active viewport
+     * @return Pixel value (uint32_t)RRGGBB
+     */
     private static int computeMandelbrotPixel(int x, int y, int widthPX, int heightPX, Rectangle viewport) {
         return computeMandelbrotPixel(x, y, widthPX, heightPX, viewport.x(), viewport.y(),
                 viewport.x() + viewport.width(), viewport.y() + viewport.height());
     }
 
+    /**
+     * Compute the Mandelbrot Set natively
+     * 
+     * @param x                 Screenspace pixel X coord
+     * @param y                 Screenspace pixel Y coord
+     * @param widthPX           Screen width
+     * @param heightPX          Screen height
+     * @param topLeftXCoord     Screenspace pixel X coord of the top left of the
+     *                          viewport
+     * @param topLeftYCoord     Screenspace pixel Y coord of the top left of the
+     *                          viewport
+     * @param bottomRightXCoord Screenspace pixel X coord of the bottom right of the
+     *                          viewport
+     * @param bottomRightYCoord Screenspace pixel y coord of the bottom right of the
+     *                          viewport
+     * @return Pixel value (uint32_t)RRGGBB
+     */
     private static native int computeMandelbrotPixel(int x, int y, int widthPX, int heightPX, double topLeftXCoord,
             double topLeftYCoord, double bottomRightXCoord, double bottomRightYCoord);
 
