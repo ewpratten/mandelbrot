@@ -34,13 +34,13 @@ jar{
     }
 }
 
-sourceSets{
-    main{
-        resources{
-            srcDirs += "$buildDir/libs/bridge/shared"
-        }
-    }
-}
+// sourceSets{
+//     main{
+//         resources{
+//             srcDirs += "$buildDir/libs/bridge/shared"
+//         }
+//     }
+// }
 
 // rootProject.tasks.getByName("bridgeSharedLibrary").dependsOn compileJava
 // rootProject.tasks.getByName("bridgeStaticLibrary").dependsOn compileJava
