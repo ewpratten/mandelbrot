@@ -3,6 +3,8 @@ package ca.retrylife.mandelbrot.jni;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ca.retrylife.nativetools.RuntimeLibraryLoader;
+
 import com.raylib.Jaylib;
 import com.raylib.Jaylib.Vector2;
 import com.raylib.Raylib.Rectangle;
@@ -15,19 +17,27 @@ public class MandelbrotRenderer {
     private final static Logger logger = LoggerFactory.getLogger(MandelbrotRenderer.class);
 
     // JNI loading
+    // static {
+
+    // // Load C++ library
+    // logger.info("java.library.path: " + System.getProperty("java.library.path"));
+
+    // try {
+    // System.loadLibrary("bridge");
+    // } catch (Error | Exception e) {
+    // logger.error("Failed to load JNI bridge library: ", e);
+    // }
+
+    // logger.info("Native library initialization sequence complete.");
+
+    // }
+
+    // JNI
+    private static RuntimeLibraryLoader<MandelbrotRenderer> jniLoader = new RuntimeLibraryLoader<>("bridge",
+            MandelbrotRenderer.class);
+
     static {
-
-        // Load C++ library
-        logger.info("java.library.path: " + System.getProperty("java.library.path"));
-
-        try {
-            System.loadLibrary("bridge");
-        } catch (Error | Exception e) {
-            logger.error("Failed to load JNI bridge library: ", e);
-        }
-
-        logger.info("Native library initialization sequence complete.");
-
+        jniLoader.load();
     }
 
     private MandelbrotRenderer() {

@@ -24,6 +24,10 @@ plugins {
 
     // Apply the application plugin to add support for building a CLI application.
     id 'application'
+
+    // Packaging
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+
 }
 
 apply from: "jni.gradle"
@@ -96,3 +100,8 @@ gradle.startParameter.taskNames.each {
 }
 
 gradle.startParameter.taskNames = expandedTaskList.flatten()
+
+shadowJar {
+   archiveBaseName.set('mandelbrot')
+   archiveClassifier.set('application')
+}
