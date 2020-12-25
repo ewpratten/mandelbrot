@@ -31,3 +31,6 @@ jar{
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
+
+// rootProject.tasks.getByName("bridgeSharedLibrary").dependsOn compileJava
+// rootProject.tasks.getByName("bridgeStaticLibrary").dependsOn compileJava

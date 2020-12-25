@@ -6,7 +6,7 @@
         {
             "label": "run",
             "type": "shell",
-            "command": "./gradlew :run",
+            "command": "./gradlew compileJava compileBridgeSharedLibraryBridgeCpp compileBridgeStaticLibraryBridgeCpp build run",
             "problemMatcher": []
         }
     ]

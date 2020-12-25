@@ -44,8 +44,23 @@ public class App {
             Jaylib.BeginDrawing();
             Jaylib.ClearBackground(Jaylib.BLACK);
 
+            // Handle "Rebuilding Render Cache" message
+            if (!MandelbrotRenderer.isCacheBuilt()) {
+                Jaylib.DrawText("Rebuilding Render Cache", 100, 100, 20, Jaylib.MAROON);
+
+                // Reset the screen
+                Jaylib.EndDrawing();
+                Jaylib.BeginDrawing();
+            }
+
             // Render the mandelbrot set
             MandelbrotRenderer.renderMandelbrotSet(Jaylib.GetScreenWidth(), Jaylib.GetScreenHeight(), viewport);
+
+            // for (int x = 0; x < Jaylib.GetScreenWidth(); x++) {
+            // for (int y = 0; y < Jaylib.GetScreenHeight(); y++) {
+            // Jaylib.DrawPixel(x, y, new Jaylib.Color().r((byte)128));
+            // }
+            // }
 
             // Render zoom box
             if (isUserDrawingZoomBox && zoomBoxStart != null && zoomBoxEnd != null) {
@@ -78,6 +93,9 @@ public class App {
                 isUserDrawingZoomBox = false;
                 zoomBoxStart = null;
                 zoomBoxEnd = null;
+
+                // Reset the render cache
+                MandelbrotRenderer.resetRenderCache();
 
             }
 
@@ -121,6 +139,9 @@ public class App {
 
                     // Build a new viewport
                     viewport = RectangleUtil.buildRectFromUnknownCorners(mappedStart, mappedEnd);
+
+                    // Reset the render cache
+                    MandelbrotRenderer.resetRenderCache();
 
                 }
 
