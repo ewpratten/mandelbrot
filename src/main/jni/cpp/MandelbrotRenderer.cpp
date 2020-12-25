@@ -14,10 +14,10 @@
 #define RENDER_SCALE 1
 
 // Function domain
-#define FUN_X_MIN -4
-#define FUN_X_MAX 2
-#define FUN_Y_MIN -2
-#define FUN_Y_MAX 2
+#define FUN_X_MIN -2
+#define FUN_X_MAX 1
+#define FUN_Y_MIN -1
+#define FUN_Y_MAX 1
 
 JNIEXPORT jint JNICALL
 Java_ca_retrylife_mandelbrot_jni_MandelbrotRenderer_computeMandelbrotPixel(
@@ -56,6 +56,10 @@ Java_ca_retrylife_mandelbrot_jni_MandelbrotRenderer_computeMandelbrotPixel(
     // Map screenspace percentage to graph coord
     double cX = map(xCoordScreenSpacePercentage, 0, 1, FUN_X_MIN, FUN_X_MAX);
     double cY = map(yCoordScreenSpacePercentage, 0, 1, FUN_Y_MIN, FUN_Y_MAX);
+
+    // std::cout << x << ",i " << widthPX <<", " << xCoordScreenSpacePercentage<< std::endl;
+    // std::cout << xCoordScreenSpacePercentage << ", " << yCoordScreenSpacePercentage << std::endl;
+    // std::cout << cX << ", " << cY << std::endl;
 
     //  Pseudo-recurse the function
     int iter = MAX_DEPTH;
